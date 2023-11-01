@@ -95,8 +95,8 @@ def population_inversion_all(N, omega_l, omega_0, omega_c, g, E0, n, area, ini, 
 
     #print(result1.expect[0][indice])
     alpha = result1.expect[0][indice]
-    coherente=tensor(coherent(N,np.sqrt(alpha)),basis(2,1))
-    coherente2=result2.states[indice]
+    state=tensor(coherent(N,np.sqrt(alpha)),basis(2,1))
+    state2=result2.states[indice]
     #print(coherente.norm())
     #print(coherente2.norm())
     #print(coherente.dag()*unit*coherente)
