@@ -3,11 +3,11 @@ N=50
 omega_c, omega_0, omega_l = 0.05, 0.05, 0.05
 g = 0.01
 E0 = 0.02
-n=7
+n=5
 area = "inversion"
 ini = ["e", 0]  
-num_steps = 2000
-tg= (2*n+1)*np.pi/(2*g)-1500
+num_steps = 5000
+tg= (n)*np.pi/(2*g)
 tf=2*tg
 ti=tg
 

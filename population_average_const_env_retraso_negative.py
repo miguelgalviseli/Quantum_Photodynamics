@@ -149,6 +149,8 @@ def population_inversion_all(N, omega_l, omega_0, omega_c, g, E0, n, area, ini, 
 
     b=np.abs(pulso2(t))**2
     unidad=result1.expect[4]
+    inversion=result1.expect[1]
+    alphas=result1.expect[0]
     #Ahora vamos a graficar la inversión de población y el número promedio de fotones
     # Graficamos la inversion de poblacion
     plt.figure(figsize=(12,7),facecolor='w')
@@ -171,6 +173,7 @@ def population_inversion_all(N, omega_l, omega_0, omega_c, g, E0, n, area, ini, 
     plt.plot(t,pulso2(t)*50*30, label="Pulso",color='green',lw=1)
     plt.plot(t,heaviside2(t)*100*30, label="Envolvente",color='#ED553B',lw=1)
     plt.plot(t, result1.expect[0], label="Numero promedio de fotones",color='#20639B',lw=2)
+    plt.xticks(np.arange(0, max(t), 200))
     plt.xlabel('Tiempo',fontsize=15)
     plt.ylabel('Numero promedio de fotones',fontsize=15)
     plt.legend(fontsize=12)
@@ -196,7 +199,7 @@ def population_inversion_all(N, omega_l, omega_0, omega_c, g, E0, n, area, ini, 
 
 
 
-    return resultadose, resultadosg, b, resultados_suma, result_p, alpha, indice, coherent,unidad
+    return resultadose, resultadosg, b, resultados_suma, result_p, alpha, indice, coherent,unidad, inversion, alphas
     
 
 
