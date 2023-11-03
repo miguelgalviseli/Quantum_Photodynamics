@@ -12,11 +12,11 @@ N=20
 omega_c, omega_0, omega_l = 0.05, 0.05, 0.05
 g = 0.01
 E0 = 0.02
-n=5
+n=2
 area = "inversion"
 ini = ["e", 0]  
 num_steps = 1000
-tg= (n)*np.pi/(2*g)
+tg= (n)*np.pi/(g)
 tf=2*tg
 ti=tg
 t = np.linspace(0,max([tf,tg+ti]),num_steps)
@@ -51,14 +51,9 @@ def inversion_analitica(t, N, alpha,g):
         for i in range(N):
             for j in range(N):
                 suma+= abs(matrix_element(i,j,np.sqrt(alpha[k])))**2*np.cos(g*np.sqrt(i+1)*t[k])**2 - abs(matrix_element(i,j+1,np.sqrt(alpha[k])))**2*np.sin(g*np.sqrt(i+1)*t[k])**2
-        list.append(suma)
-    return list
+        plt.scatter(t[k],suma)
 
-    
+    plt.show()
 
-A=inversion_analitica(t, N, a[10],g)
-
-plt.plot(t,A)
-plt.plot(t,a[9])
-plt.show()
+inversion_analitica(t, N, a[10],g)    
                   
