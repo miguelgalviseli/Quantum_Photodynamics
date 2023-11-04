@@ -8,11 +8,11 @@ from scipy.special import factorial
 from population_average_const_env_retraso_negative import *
 
 #Veamos la inversión de población para un pulso actuando sobre un estado inicial venido del Jaynes-Cummings
-N=50
+N=30
 omega_c, omega_0, omega_l = 0.05, 0.05, 0.05
 g = 0.01
 E0 = 0.02
-n=2
+n=3
 area = "inversion"
 ini = ["e", 0]  
 num_steps = 1000
@@ -52,8 +52,8 @@ def inversion_analitica(t, N, alpha,g):
         suma=0
         for i in range(N):
             for j in range(N):
-                suma+= abs(matrix_element(i,j,np.sqrt(alpha[k])))**2*np.cos(g*np.sqrt(i+1)*t[k])**2 - abs(matrix_element(i,j+1,np.sqrt(alpha[k])))**2*np.sin(g*np.sqrt(i+1)*t[k])**2
-        list.append(suma/20)
+                suma+= abs(matrix_element(i,j,np.sqrt(alpha[0])))**2*np.cos(g*np.sqrt(i)*t[k])**2 - abs(matrix_element(i,j+1,np.sqrt(alpha[0])))**2*np.sin(g*np.sqrt(i+1)*t[k])**2
+        list.append(suma/N)
     return list
 
 
@@ -87,6 +87,10 @@ c=inversion_analitica(t2,N,alpha,g)
 #print(c)
 plt.plot(t_sim,inversion, label="Simulación")
 plt.plot(t_sim,c, label="Teórico")
+plt.xlabel("Tiempo")
+plt.ylabel("Inversión de población")
+plt.grid()
+#plt.xticks(np.arange(ti[0], ti, 50))
 plt.legend()
 plt.show()
 
