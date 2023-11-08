@@ -16,7 +16,7 @@ n=3
 area = "inversion"
 ini = ["e", 0]  
 num_steps = 1000
-tg= (n)*np.pi/(g)
+tg= (n)*np.pi/(g)-200
 tf=2*tg
 ti=tg
 t = np.linspace(0,max([tf,tg+ti]),num_steps)
@@ -42,6 +42,8 @@ def matrix_element(m,n, alpha):
         else:
              return ((-alpha)**(n-m))*np.sqrt(factorial(m)/factorial(n))*np.exp(-(abs(alpha)**2)/2)*genlaguerre(m,n-m)(abs(alpha)**2)
         
+
+        
              
 
 #Definamos la función que calcula la inversión de población analítica
@@ -52,7 +54,7 @@ def inversion_analitica(t, N, alpha,g):
         suma=0
         for i in range(N):
             for j in range(N):
-                suma+= abs(matrix_element(i,j,np.sqrt(alpha[0])))**2*np.cos(g*np.sqrt(i)*t[k])**2 - abs(matrix_element(i,j+1,np.sqrt(alpha[0])))**2*np.sin(g*np.sqrt(i+1)*t[k])**2
+                suma+= abs(matrix_element(i,j,np.sqrt(alpha[0])))**2*np.cos(g*np.sqrt(j+1)*t[k])**2 - abs(matrix_element(i,j+1,np.sqrt(alpha[0])))**2*np.sin(g*np.sqrt(j+1)*t[k])**2 -abs(matrix_element(i,j+1,np.sqrt(alpha[0])))**2*np.cos(g*np.sqrt(j)*t[k])**2
         list.append(suma/N)
     return list
 
@@ -83,7 +85,7 @@ for i in range(len(a[0][1])):
         inversion.append(a[9][i])
 
 #GRAFICAMOS
-c=inversion_analitica(t2,N,alpha,g)
+c=inversion_analitica(t2,N,alpha,0)
 #print(c)
 plt.plot(t_sim,inversion, label="Simulación")
 plt.plot(t_sim,c, label="Teórico")
