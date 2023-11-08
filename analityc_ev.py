@@ -16,7 +16,7 @@ n=3
 area = "inversion"
 ini = ["e", 0]  
 num_steps = 1000
-tg= (n)*np.pi/(g)-200
+tg= (n)*np.pi/(g)-250
 tf=2*tg
 ti=tg
 t = np.linspace(0,max([tf,tg+ti]),num_steps)
@@ -28,8 +28,12 @@ print(ti)
 print(tg)
 #population_inversion(N, omega_l, omega_0, omega_c, g, E0, n, area, ini, num_steps,tf,ti,tg)
 a=population_inversion_all(N, omega_l, omega_0, omega_c,g, E0, n, area, ini, num_steps,tf,ti,tg)
-print(a[10])
-print(a[9])
+
+plt.plot(t,a[11],label="|e>")
+plt.plot(t,a[12]*(-1),label="|g>")
+plt.grid()
+plt.legend()
+plt.show()
 #Definamos las funciones que calculan los elementos de matriz en la expresión analítica
 
 #Elementos de matriz para l mayor o igual que n
@@ -48,13 +52,13 @@ def matrix_element(m,n, alpha):
 
 #Definamos la función que calcula la inversión de población analítica
 
-def inversion_analitica(t, N, alpha,g):
+def inversion_analitica(t, N, alpha,g, e0, g0):
     list=[]
     for k in tqdm(range(len(t))):
         suma=0
         for i in range(N):
             for j in range(N):
-                suma+= abs(matrix_element(i,j,np.sqrt(alpha[0])))**2*np.cos(g*np.sqrt(j+1)*t[k])**2 - abs(matrix_element(i,j+1,np.sqrt(alpha[0])))**2*np.sin(g*np.sqrt(j+1)*t[k])**2 -abs(matrix_element(i,j+1,np.sqrt(alpha[0])))**2*np.cos(g*np.sqrt(j)*t[k])**2
+                suma+= e0*abs(matrix_element(i,j,np.sqrt(alpha[0])))**2*np.cos(g*np.sqrt(j+1)*t[k])**2 - abs(matrix_element(i,j+1,np.sqrt(alpha[0])))**2*np.sin(g*np.sqrt(j)*t[k])**2 -g0*abs(matrix_element(i,j,np.sqrt(alpha[0])))**2*np.cos(g*np.sqrt(j)*t[k])**2
         list.append(suma/N)
     return list
 
@@ -84,8 +88,19 @@ for i in range(len(a[0][1])):
     if i >a[6]:
         inversion.append(a[9][i])
 
+pop_e=[]
+pop_g=[]
+for i in range(len(a[0][1])):
+    if i >a[6]:
+        pop_e.append(a[11][i])
+        pop_g.append(-1*a[12][i])
+
+e0=pop_e[0]
+g0=pop_g[0]
+
+
 #GRAFICAMOS
-c=inversion_analitica(t2,N,alpha,0)
+c=inversion_analitica(t2,N,alpha,0,e0,g0)
 #print(c)
 plt.plot(t_sim,inversion, label="Simulación")
 plt.plot(t_sim,c, label="Teórico")
@@ -95,5 +110,6 @@ plt.grid()
 #plt.xticks(np.arange(ti[0], ti, 50))
 plt.legend()
 plt.show()
+
 
                   

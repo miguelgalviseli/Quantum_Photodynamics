@@ -17,10 +17,18 @@ def population_inversion_all(N, omega_l, omega_0, omega_c, g, E0, n, area, ini, 
     t = np.linspace(0,max([tf,tg+ti]),num_steps)
 
     def heaviside(t,args):
-        return np.heaviside(t-0,1)*(g)
+        if t>=0 and t<=tg:
+            return np.heaviside(t-0,1)*(g)
+        
+        else:
+            return 0
+        
     
     def heaviside2(t):
-        return np.heaviside(t-0,1)*(g)
+        condition = (t >= 0) & (t <= tg)
+        pulso = np.heaviside(t-0,1)*(g)
+        pulso[~condition] = 0  # Establecer a cero donde la condición no se cumple
+        return pulso
     
 
     def pulso(t,args):
@@ -146,6 +154,8 @@ def population_inversion_all(N, omega_l, omega_0, omega_c, g, E0, n, area, ini, 
         resultadose.append(result.expect[2])
         resultadosg.append(result.expect[1])
         resultados_suma.append(result.expect[2]-result.expect[1])
+        resultadose_suma = sum(resultadose)
+        resultadosg_suma = sum(resultadosg)
 
     b=np.abs(pulso2(t))**2
     unidad=result1.expect[4]
@@ -199,7 +209,7 @@ def population_inversion_all(N, omega_l, omega_0, omega_c, g, E0, n, area, ini, 
 
 
 
-    return resultadose, resultadosg, b, resultados_suma, result_p, alpha, indice, coherent,unidad, inversion, alphas
+    return resultadose, resultadosg, b, resultados_suma, result_p, alpha, indice, coherent,unidad, inversion, alphas, resultadose_suma, resultadosg_suma
     
 
 
