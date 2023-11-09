@@ -8,15 +8,15 @@ from scipy.special import factorial
 from population_average_const_env_retraso_negative import *
 
 #Veamos la inversión de población para un pulso actuando sobre un estado inicial venido del Jaynes-Cummings
-N=30
+N=40
 omega_c, omega_0, omega_l = 0.05, 0.05, 0.05
 g = 0.01
 E0 = 0.02
-n=3
+n=2
 area = "inversion"
 ini = ["e", 0]  
 num_steps = 1000
-tg= (n)*np.pi/(g)-250
+tg= (n)*np.pi/(g)-100
 tf=2*tg
 ti=tg
 t = np.linspace(0,max([tf,tg+ti]),num_steps)
@@ -107,6 +107,7 @@ plt.plot(t_sim,c, label="Teórico")
 plt.xlabel("Tiempo")
 plt.ylabel("Inversión de población")
 plt.grid()
+plt.ylim(-1.2,1.2)
 #plt.xticks(np.arange(ti[0], ti, 50))
 plt.legend()
 plt.show()
