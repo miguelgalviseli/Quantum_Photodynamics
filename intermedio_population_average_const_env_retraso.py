@@ -20,65 +20,142 @@ import math as math
 
 
 def population_inversion_all(N, omega_l, omega_0, omega_c, g, E0, area, ini, num_steps,tf,tg,retraso):
-        #ti va a variar dependiendo del grado de retraso que exista entre el pulso y heaviside
-    #el retraso máximo indica que el pulso termina e inmediatamente después comienza a actuar g(t)
-    #El retraso del 75% indica que cuando haya transcurrido el 75% del pulso comienza a actuar g(t)
-    #El retraso del 50% indica que cuando haya transcurrido el 50% del pulso comienza a actuar g(t)
-    #El retraso del 25% indica que cuando haya transcurrido el 25% del pulso comienza a actuar g(t)
-    #El retraso del 0% indica que cuando haya transcurrido el 0% del pulso comienza a actuar g(t)
+        #ti va a variar dependiendo del grado de retraso que exista entre heaviside y el pulso
+        #El retraso negativo indica que primero actúa g(t) y luego el pulso
+        #El retraso negativo minimo indica que pulso y g(t) termianan al mismo tiempo
+        #El retraso negativo del 25% indica que cuando termine g(t) al pulso le queda el 25% de su duración
+        #El retraso negativo del 50% indica que cuando termine g(t) al pulso le queda el 50% de su duración
+        #El retraso negativo del 75% indica que cuando termine g(t) al pulso le queda el 75% de su duración
+        #El retraso negativo del 100% indica que cuando termine g(t) al pulso le queda el 100% de su duración
 
-    #Definamos los distintos ti para el inicicio de g(t)
+    #Definamos los distintos ti para el inicicio del pulso
+    tf1=tf
     if retraso == 0:
-        ti = 0
+        ti = tg-tf
     elif retraso == 25:
-        ti = tf/4
+        ti = tg-3*tf/4
     elif retraso == 50:
-        ti = tf/2
+        ti = tg-tf/2
     elif retraso == 75:
-        ti = 3*tf/4
+        ti = tg-tf/4
     elif retraso == 100:
-        ti = tf
+        ti = tg
+
+    elif retraso == -2:
+        ti = tg-2*tf
+
+    elif retraso == -3:
+        ti = tg-3*tf
+    
+
+
+    else:
+        print("El grado de retraso no es válido")
+
+    #Redefinamos tf
+    if retraso == 0:
+        tf = ti+tf
+    elif retraso == 25:
+        tf = ti+tf
+    elif retraso == 50:
+        tf = ti+tf
+    elif retraso == 75:
+        tf = ti+tf
+    elif retraso == 100:
+        tf = ti+tf
+    elif retraso == -2:
+        tf = ti+tf
+    elif retraso == -3:
+        tf = ti+tf
     else:
         print("El grado de retraso no es válido")
 
 
-    t = np.linspace(0,max([tf,tg+ti]),num_steps)
-    t2=t[-1]
+
+
+
+
+    t = np.linspace(0,max([tg,tf]),num_steps)
+    #t2=tg[-1]
 
     def heaviside(t,args):
-        return np.heaviside(t-ti,1)*(g)
+        if t<=tg:
+            return np.heaviside(t-0,1)*(g)
+        else:
+            return 0
+        
     
     def heaviside2(t):
-        condition = (t > ti) & (t < t2)
-        he = np.heaviside(t-ti,1)*(g)
+        condition = (t > 0) & (t < tg)
+        he = np.heaviside(t-0,1)*(g)
         he[~condition] = 0  # Establecer a cero donde la condición no se cumple
         return he
     
 
-    def pulso(t,args):
-        if t>=0 and t<=tf:
-            return E0*(np.sin(np.pi*t/tf)**2) *np.cos(omega_l*(t-tf/2))
-        else:
-            return 0
+
+    if retraso==0 or retraso==100 or retraso==-2 or retraso==-3:
+            
+            def pulso(t,args):
+                if t>=ti and t<=tf:
+                    return E0*(np.sin(np.pi*(t-tf1/4)/(tf-ti))**2) *np.cos(omega_l*(t))
+                else:
+                    return 0
+
         
-    #Escribamos el pulso con el coseno como exponenciales
-    def pulso_RWA1(t, args):
-        if t>0 and t<=tf:
-            return E0*(np.sin(np.pi * t / tf) ** 2)*(np.exp(1j*omega_l *(t - tf / 2)))/2
-        
-    
-    def pulso_RWA2(t, args):
-        if t>0 and t<=tf:
-            return E0*(np.sin(np.pi * t / tf) ** 2)*(np.exp(-1j*omega_l *(t - tf / 2)))/2    
-        
-    def pulso2(t):
-        condition = (t >= 0) & (t <= tf)
-        pulso = E0 * (np.sin(np.pi * t / tf) ** 2) * np.cos(omega_l * (t - tf / 2))
-        pulso[~condition] = 0  # Establecer a cero donde la condición no se cumple
-        return pulso
+            def pulso2(t):
+                condition = (t >= ti) & (t <= tf)
+                pulso = E0 * (np.sin(np.pi * (t-tf1/4) / (tf-ti)) ** 2) * np.cos(omega_l * (t-(tf-ti)/2 ))
+                pulso[~condition] = 0  # Establecer a cero donde la condición no se cumple
+                return pulso
 
 
+    if retraso==25:
+            
+            def pulso(t,args):
+                if t>=ti and t<=tf:
+                    return E0*(np.sin(np.pi*(t-tf1/2)/(tf-ti))**2) *np.cos(omega_l*(t))
+                else:
+                    return 0
 
+        
+            def pulso2(t):
+                condition = (t >= ti) & (t <= tf)
+                pulso = E0 * (np.sin(np.pi * (t-tf1/2) / (tf-ti)) ** 2) * np.cos(omega_l * (t-(tf-ti)/2 ))
+                pulso[~condition] = 0  # Establecer a cero donde la condición no se cumple
+                return pulso
+
+
+    if retraso==50:
+            
+            def pulso(t,args):
+                if t>=ti and t<=tf:
+                    return E0*(np.sin(np.pi*(t-3*tf1/4)/(tf-ti))**2) *np.cos(omega_l*(t))
+                else:
+                    return 0
+
+        
+            def pulso2(t):
+                condition = (t >= ti) & (t <= tf)
+                pulso = E0 * (np.sin(np.pi * (t-3*tf1/4) / (tf-ti)) ** 2) * np.cos(omega_l * (t-(tf-ti)/2 ))
+                pulso[~condition] = 0  # Establecer a cero donde la condición no se cumple
+                return pulso
+            
+
+
+    if retraso==75:
+            
+            def pulso(t,args):
+                if t>=ti and t<=tf:
+                    return E0*(np.sin(np.pi*(t)/(tf-ti))**2) *np.cos(omega_l*(t))
+                else:
+                    return 0
+
+        
+            def pulso2(t):
+                condition = (t >= ti) & (t <= tf)
+                pulso = E0 * (np.sin(np.pi * (t) / (tf-ti)) ** 2) * np.cos(omega_l * (t-(tf-ti)/2 ))
+                pulso[~condition] = 0  # Establecer a cero donde la condición no se cumple
+                return pulso
 
     
     if ini[0]=="e":
