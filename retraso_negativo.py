@@ -8,72 +8,28 @@ from qutip import *
 from tqdm import tqdm
 import math as math
 
-    
-#Vamos a crear una función que me entregue las inversiones de población total y de cada variedad
-#para el Hamiltoniano de Jaynes-Cummings y un dipolo de radiación interractuando con un pulso
-#Primero veremos una función que muestre la inversión de población para todo el sistema.
-
 
 
     
+def population_inversion_all(N, omega_l, omega_0, omega_c, g, E0, n, area, ini, num_steps,tf,ti,tg):
 
 
-
-def population_inversion_all(N, omega_l, omega_0, omega_c, g, E0, area, ini, num_steps,tf,tg,retraso):
-        #ti va a variar dependiendo del grado de retraso que exista entre heaviside y el pulso
-        #El retraso negativo indica que primero actúa g(t) y luego el pulso
-        #El retraso negativo minimo indica que pulso y g(t) termianan al mismo tiempo
-        #El retraso negativo del 25% indica que cuando termine g(t) al pulso le queda el 25% de su duración
-        #El retraso negativo del 50% indica que cuando termine g(t) al pulso le queda el 50% de su duración
-        #El retraso negativo del 75% indica que cuando termine g(t) al pulso le queda el 75% de su duración
-        #El retraso negativo del 100% indica que cuando termine g(t) al pulso le queda el 100% de su duración
-
-    #Definamos los distintos ti para el inicicio del pulso
-    if retraso == 0:
-        ti = tg-tf
-    elif retraso == 25:
-        ti = tg-3*tf/4
-    elif retraso == 50:
-        ti = tg-tf/2
-    elif retraso == 75:
-        ti = tg-tf/4
-    elif retraso == 100:
-        ti = tg
-    else:
-        print("El grado de retraso no es válido")
-
-    #Redefinamos tf
-    if retraso == 0:
-        tf = tg
-    elif retraso == 25:
-        tf = tf/4
-    elif retraso == 50:
-        tf = tf/2
-    elif retraso == 75:
-        tf = 3*tf/4
-    elif retraso == 100:
-        tf = tf
-    else:
-        print("El grado de retraso no es válido")
-
-
-
-
-
-
-    t = np.linspace(0,max([tg,tf+ti]),num_steps)
-    #t2=tg[-1]
+    t = np.linspace(0,max([tf,tg+ti]),num_steps)
 
     def heaviside(t,args):
-        return np.heaviside(t-0,1)*(g)
+        if t>=0 and t<=tg:
+            return np.heaviside(t-0,1)*(g)
+        
+        else:
+            return 0
+        
     
     def heaviside2(t):
-        condition = (t > 0) & (t < tg)
-        he = np.heaviside(t-0,1)*(g)
-        he[~condition] = 0  # Establecer a cero donde la condición no se cumple
-        return he
+        condition = (t >= 0) & (t <= tg)
+        pulso = np.heaviside(t-0,1)*(g)
+        pulso[~condition] = 0  # Establecer a cero donde la condición no se cumple
+        return pulso
     
-
 
     def pulso(t,args):
         if t>=ti and t<=tf:
@@ -91,7 +47,6 @@ def population_inversion_all(N, omega_l, omega_0, omega_c, g, E0, area, ini, num
 
 
 
-
     
     if ini[0]=="e":
         psi0 = tensor(basis(N, ini[1]), basis(2, 1)).unit()
@@ -104,6 +59,9 @@ def population_inversion_all(N, omega_l, omega_0, omega_c, g, E0, area, ini, num
     a = tensor(destroy(N), qeye(2))
     sm = tensor(qeye(N), destroy(2))
     #print(a)
+    #Deninamos el operador número de excitación
+
+    N_ex = sm.dag()*sm + a.dag()*a
 
 
     #El Hamiltoniano H0; Cavidad y átomo.
@@ -128,13 +86,12 @@ def population_inversion_all(N, omega_l, omega_0, omega_c, g, E0, area, ini, num
     #print(unit)
     
 
-    result1 = mesolve(H, psi0, t, [], [a.dag()*a,(sm.dag() * sm-sm *sm.dag()),sm.dag() * sm,sm *sm.dag(),unit])
+    result1 = mesolve(H, psi0, t, [], [a.dag()*a,(sm.dag() * sm-sm *sm.dag()),sm.dag() * sm,sm *sm.dag(),unit,N_ex])
     #Necesito el indice para el ultimo tiempo menor o igual a tf
     #Saquemos los estados
     result2 = mesolve(H, psi0, t, [], [])
 
-    inversion=result1.expect[1]
-    average_photons=result1.expect[0]
+
     
     indice = 0
     for i in range(len(t)):
@@ -149,8 +106,8 @@ def population_inversion_all(N, omega_l, omega_0, omega_c, g, E0, area, ini, num
 
     #print(result1.expect[0][indice])
     alpha = result1.expect[0][indice]
-    coherente=tensor(coherent(N,np.sqrt(alpha)),basis(2,1))
-    coherente2=result2.states[indice]
+    state=tensor(coherent(N,np.sqrt(alpha)),basis(2,1))
+    state2=result2.states[indice]
     #print(coherente.norm())
     #print(coherente2.norm())
     #print(coherente.dag()*unit*coherente)
@@ -177,7 +134,7 @@ def population_inversion_all(N, omega_l, omega_0, omega_c, g, E0, area, ini, num
     resultados_suma = []
     resultadose = []
     resultadosg = []
-    """for i in tqdm(range(0,N)):
+    for i in tqdm(range(0,N)):
         if i == 0:
             psig= tensor(basis(N, 0), basis(2, 0)).unit()
             psie= tensor(basis(N, 0), basis(2, 1)).unit()*0
@@ -199,44 +156,47 @@ def population_inversion_all(N, omega_l, omega_0, omega_c, g, E0, area, ini, num
         resultados.append(result.expect[0])
         resultadose.append(result.expect[2])
         resultadosg.append(result.expect[1])
-        resultados_suma.append(result.expect[2]-result.expect[1])"""
+        resultados_suma.append(result.expect[2]-result.expect[1])
+        resultadose_suma = sum(resultadose)
+        resultadosg_suma = sum(resultadosg)
 
     b=np.abs(pulso2(t))**2
     unidad=result1.expect[4]
-    caja=heaviside2(t)
-    pulso_=pulso2(t)
+    inversion=result1.expect[1]
+    alphas=result1.expect[0]
     #Ahora vamos a graficar la inversión de población y el número promedio de fotones
     # Graficamos la inversion de poblacion
-    #plt.figure(figsize=(12,7),facecolor='w')
-    #plt.grid()
-    #plt.title("RWA Jaynes-Cummings y dipolo de la radiacion g={}_E0={} N={}".format(g,E0,N),fontsize=20)
-    #plt.plot(t, result1.expect[1], label="Inversion de poblacion",color='#173F5F',lw=2)
-    #plt.xticks(np.arange(0, max(t), 200))
-    #plt.plot(t, heaviside2(t)*100, label="Envolvente",color='#ED553B',lw=1)
-    #plt.plot(t, pulso2(t)*50, label="Pulso",color='green',lw=1)
-    #plt.xlabel('Tiempo',fontsize=15)
-    #plt.ylabel('Inversion de poblacion',fontsize=15)
-    #plt.legend(fontsize=12)
-    #plt.savefig('Envolvente_const_retraso/'+"RWA_population_inversion_g={}_E0={}_N={}t={}.png".format(g,E0,N,t[-1]))
-    #plt.show()
+    plt.figure(figsize=(12,7),facecolor='w')
+    plt.grid()
+    plt.title("RWA Jaynes-Cummings y dipolo de la radiacion g={}_E0={} N={}".format(g,E0,N),fontsize=20)
+    plt.plot(t, result1.expect[1], label="Inversion de poblacion",color='#173F5F',lw=2)
+    plt.xticks(np.arange(0, max(t), 200))
+    plt.plot(t, heaviside2(t)*100, label="Envolvente",color='#ED553B',lw=1)
+    plt.plot(t, pulso2(t)*50, label="Pulso",color='green',lw=1)
+    plt.xlabel('Tiempo',fontsize=15)
+    plt.ylabel('Inversion de poblacion',fontsize=15)
+    plt.legend(fontsize=12)
+    plt.savefig('Envolvente_const_retraso/'+"RWA_population_inversion_g={}_E0={}_N={}t={}.png".format(g,E0,N,t[-1]))
+    plt.show()
 
     # Graficamos el numero promedio de fotones
-    #plt.figure(figsize=(12,7))
-    #plt.grid()
-    #plt.title("RWA Radiación y cavidad g={}_E0={}_N={}{}".format(g,E0,N,area),fontsize=20)
-    #plt.plot(t,pulso2(t)*50*30, label="Pulso",color='green',lw=1)
-    #plt.plot(t,heaviside2(t)*100*30, label="Envolvente",color='#ED553B',lw=1)
-    #plt.plot(t, result1.expect[0], label="Numero promedio de fotones",color='#20639B',lw=2)
-    #plt.xlabel('Tiempo',fontsize=15)
-    #plt.ylabel('Numero promedio de fotones',fontsize=15)
-    #plt.legend(fontsize=12)
+    plt.figure(figsize=(12,7))
+    plt.grid()
+    plt.title("RWA Radiación y cavidad g={}_E0={}_N={}{}".format(g,E0,N,area),fontsize=20)
+    plt.plot(t,pulso2(t)*50*30, label="Pulso",color='green',lw=1)
+    plt.plot(t,heaviside2(t)*100*30, label="Envolvente",color='#ED553B',lw=1)
+    plt.plot(t, result1.expect[0], label="Numero promedio de fotones",color='#20639B',lw=2)
+    plt.xticks(np.arange(0, max(t), 200))
+    plt.xlabel('Tiempo',fontsize=15)
+    plt.ylabel('Numero promedio de fotones',fontsize=15)
+    plt.legend(fontsize=12)
     #plt.savefig('Envolvente_const_retraso/'+"RWA_average_photons_g={}_E0={}_N={}_t={}.png".format(g,E0,N,t[-1]))
-    #plt.show()
+    plt.show()
 
 
 
     #Grafiquemos todas las inversiones de población
-    """plt.figure(figsize=(12,7))
+    plt.figure(figsize=(12,7))
     plt.grid()
     plt.title("RWA Radiación y cavidad g={}_E0={}_N={}{}".format(g,E0,N,area),fontsize=20)
     for i in range(0,N):
@@ -248,11 +208,23 @@ def population_inversion_all(N, omega_l, omega_0, omega_c, g, E0, area, ini, num
     plt.ylabel('Inversion de poblacion',fontsize=15)
     plt.legend(fontsize=12)
     #plt.savefig('Envolvente_const_retraso/'+"RWA_population_inversion_all_g={}_E0={}_N={}_t={}.png".format(g,E0,N,t[-1]))
-    plt.show()"""
+    plt.show()
+
+    #Grafiquemos N_ex
+    plt.figure(figsize=(12,7))
+    plt.grid()
+    plt.title("RWA Radiación y cavidad g={}_E0={}_N={}{}".format(g,E0,N,area),fontsize=20)
+
+    plt.plot(t, result1.expect[5], label="Numero de excitaciones",color='#173F5F',lw=2)
+    plt.xlabel('Tiempo',fontsize=15)
+    plt.ylabel('Numero de excitaciones',fontsize=15)
+    plt.legend(fontsize=12)
+
+    plt.show()
 
 
 
-    return t, inversion, average_photons, caja, pulso_
+    return resultadose, resultadosg, b, resultados_suma, result_p, alpha, indice, coherent,unidad, inversion, alphas, resultadose_suma, resultadosg_suma
     
 
 

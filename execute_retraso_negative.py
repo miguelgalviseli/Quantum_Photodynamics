@@ -1,25 +1,71 @@
 from population_average_const_env_retraso_negative import *
-N=50
+N=40
 omega_c, omega_0, omega_l = 0.05, 0.05, 0.05
 g = 0.01
 E0 = 0.02
-n=6
+n=2
 area = "inversion"
 ini = ["e", 0]  
-num_steps = 2000
-tg= (n)*np.pi/(2*g)-200
-tf=2*tg
-ti=tg
+num_steps = 5000
+tf= (2*n+1)*np.pi/(2*g)
+tg=3*tf+1000
+retraso=100
+
+
 
 #population_inversion_variedades(N, omega_l, omega_0, omega_c, g, E0, n, variedades, area, ini, num_steps)
 #population_inversion(N, omega_l, omega_0, omega_c, g, E0, n, area, ini, num_steps,retraso)
 print(tf)
-print(ti)
 print(tg)
-#population_inversion(N, omega_l, omega_0, omega_c, g, E0, n, area, ini, num_steps,tf,ti,tg)
-population_inversion_all(N, omega_l, omega_0, omega_c,g, E0, n, area, ini, num_steps,tf,ti,tg)
-#population_inversion_RWA_coherent(N, omega_l, omega_0, omega_c, g, E0, n, area, ini, num_steps,retraso)
-#average_photons_variedad(N, omega_l, omega_0, omega_c, g, E0, n, area, ini, num_steps)
-#population_inversion_all(N, omega_l, omega_0, omega_c, g, E0, n, area, ini, num_steps)
 
+import matplotlib.pyplot as plt
 
+import matplotlib.pyplot as plt
+
+# population_inversion(N, omega_l, omega_0, omega_c, g, E0, n, area, ini, num_steps, tf, ti, tg)
+retraso1 = population_inversion_all(N, omega_l, omega_0, omega_c, g, E0, area, ini, num_steps, tf, tg, 100)
+retraso2 = population_inversion_all(N, omega_l, omega_0, omega_c, g, E0, area, ini, num_steps, tf, tg, 75)
+retraso3 = population_inversion_all(N, omega_l, omega_0, omega_c, g, E0, area, ini, num_steps, tf, tg, 50)
+retraso4 = population_inversion_all(N, omega_l, omega_0, omega_c, g, E0, area, ini, num_steps, tf, tg, 25)
+retraso5 = population_inversion_all(N, omega_l, omega_0, omega_c, g, E0, area, ini, num_steps, tf, tg, 0)
+
+# Crear un subplot con 5 filas y 1 columna
+fig, axs = plt.subplots(5, 1, figsize=(16, 18), facecolor='w', sharex=True)
+# Ajustar el tamaño de la figura
+fig.subplots_adjust(hspace=0.5, left=0.1, right=0.9, top=0.95, bottom=0.05)
+
+# Graficar cada retrazo
+for i, retraso in enumerate([retraso1, retraso2, retraso3, retraso4, retraso5]):
+    #En cada esquina superior izquierda de cada subplot, agregar A) B) C) D) E)
+    axs[i].text(0, 0.90,  chr(65 + i) + ")", transform=axs[i].transAxes, size=20, weight='bold')
+    axs[i].plot(retraso[0], retraso[1], label=r'$\langle \hat{\sigma}_{3} \rangle$', color="#FFC30F", lw=2.5)
+    axs[i].plot(retraso[0], retraso[3] * 50, label=r'$\lambda (t)$', color='black', lw=3)
+    axs[i].plot(retraso[0], retraso[4] * 25, label="pulso", color="#C70039", lw=2)
+    axs[i].tick_params(axis='y', labelsize=18)
+    axs[i].legend(fontsize=18)
+    axs[i].grid()
+
+    # Etiquetas en x solo para el último subplot
+    if i == 4:
+        axs[i].set_xlabel("Tiempo (u.a)", fontsize=18)
+        axs[i].set_xticks([valor for valor in axs[i].get_xticks() if valor >= axs[i].get_xlim()[0] and valor <= axs[i].get_xlim()[1]])
+        axs[i].tick_params(axis='x', labelsize=18)
+        axs[i].tick_params(axis='y', labelsize=18)
+
+    # Etiquetas en x solo para el último subplot
+    #if i == 0:
+     #    axs[i].plot(retraso[0], retraso[1], label=r'$\langle \hat{\sigma}_{3} \rangle$ Analítico', color="blue", lw=0.75)
+      #   axs[i].legend(fontsize=18)
+
+# Unificar leyendas
+handles, labels = axs[0].get_legend_handles_labels()
+fig.legend(handles, labels, loc='upper right', bbox_to_anchor=(1.1, 0.90), fontsize=15)
+
+# Ajustar el diseño
+plt.tight_layout()
+
+# Ajustar el tamaño de la imagen al guardarla (aumentando el dpi)
+plt.savefig('Inversiones_minus.png', dpi=250)
+
+# Mostrar el gráfico
+plt.show()
