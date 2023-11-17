@@ -3,12 +3,16 @@ N=40
 omega_c, omega_0, omega_l = 0.05, 0.05, 0.05
 g = 0.01
 E0 = 0.02
+#n=2
 n=2
+n2=6
 area = "inversion"
 ini = ["e", 0]  
 num_steps = 5000
+#tf= (2*n+1)*np.pi/(2*g)
 tf= (2*n+1)*np.pi/(2*g)
-tg=3*tf+1000
+#tg=3*tf+1000
+tg=(2*n2+1)*np.pi/(4*g)
 retraso=100
 
 
@@ -74,11 +78,11 @@ plt.show()
 plt.figure(figsize=(12,7))
 plt.grid()
 #plt.title("Inversion de poblacion y numero promedio de fotones",fontsize=20)
-plt.plot(retraso1[0], retraso5[2], label="Retraso = 100%",color='#173F5F')
-plt.plot(retraso2[0], retraso4[2], label="Retraso = 75%",color='#20639B')
+plt.plot(retraso5[0], retraso5[2], label="Retraso = 100%",color='#173F5F')
+plt.plot(retraso4[0], retraso4[2], label="Retraso = 75%",color='#20639B')
 plt.plot(retraso3[0], retraso3[2], label="Retraso = 50%",color='#3CAEA3')
-plt.plot(retraso4[0], retraso2[2], label="Retraso = 25%",color='#F6D55C')
-plt.plot(retraso5[0], retraso1[2], label="Retraso = 0%",color='#ED553B')
+plt.plot(retraso2[0], retraso2[2], label="Retraso = 25%",color='#F6D55C')
+plt.plot(retraso1[0], retraso1[2], label="Retraso = 0%",color='#ED553B')
 plt.xlabel('Tiempo (u.a.)',fontsize=15)
 plt.ylabel(r'$\langle \hat{a}^{\dagger}\hat{a} \rangle$',fontsize=15)
 plt.legend(fontsize=16)

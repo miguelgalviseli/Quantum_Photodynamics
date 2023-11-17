@@ -77,6 +77,7 @@ plt.ylabel(r'$\langle \hat{a}^{\dagger}\hat{a} \rangle$',fontsize=15)
 plt.legend(fontsize=16)
 plt.xticks(fontsize=16)
 plt.yticks(fontsize=16)
+plt.yticks(np.arange(0, 17, 1))
 plt.savefig('Aver_minus_int.png', dpi=250)
 
 plt.show()
