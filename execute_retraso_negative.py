@@ -44,7 +44,7 @@ for i, retraso in enumerate([retraso1, retraso2, retraso3, retraso4, retraso5]):
     axs[i].text(0, 0.90,  chr(65 + i) + ")", transform=axs[i].transAxes, size=20, weight='bold')
     axs[i].plot(retraso[0], retraso[1], label=r'$\langle \hat{\sigma}_{3} \rangle$', color="#EF767A", lw=2.5)
     axs[i].plot(retraso[0], retraso[3] * 50, label=r'$\lambda (t)$', color='black', lw=3)
-    axs[i].plot(retraso[0], retraso[4] * 25, label="pulso", color="#C70039", lw=2)
+    axs[i].plot(retraso[0], retraso[4] * 25, label="pulso", color="#456990", lw=2)
     axs[i].tick_params(axis='y', labelsize=18)
     axs[i].legend(fontsize=18)
     axs[i].grid()
@@ -58,8 +58,8 @@ for i, retraso in enumerate([retraso1, retraso2, retraso3, retraso4, retraso5]):
 
     # Etiquetas en x solo para el último subplot
     if i == 4:
-         axs[i].plot(retraso[0], retraso[1], label=r'$\langle \hat{\sigma}_{3} \rangle$ Analítico', color="blue", lw=0.75)
-         axs[i].legend(fontsize=18, loc='center')
+         axs[i].plot(retraso[0], retraso[1], label=r'$\langle \hat{\sigma}_{3} \rangle$ Analítico', color="blue", lw=0.5)
+         axs[i].legend(fontsize=18, loc='lower left')
 
 # Unificar leyendas
 handles, labels = axs[0].get_legend_handles_labels()
@@ -81,13 +81,22 @@ plt.grid()
 plt.plot(retraso5[0], retraso5[2], label="Retraso = 100%",color='#173F5F')
 plt.plot(retraso4[0], retraso4[2], label="Retraso = 75%",color='#20639B')
 plt.plot(retraso3[0], retraso3[2], label="Retraso = 50%",color='#3CAEA3')
-plt.plot(retraso2[0], retraso2[2], label="Retraso = 25%",color='#F6D55C')
+plt.plot(retraso2[0], retraso2[2], label="Retraso = 25%",color='#34A853')
 plt.plot(retraso1[0], retraso1[2], label="Retraso = 0%",color='#ED553B')
 plt.xlabel('Tiempo (u.a.)',fontsize=15)
 plt.ylabel(r'$\langle \hat{a}^{\dagger}\hat{a} \rangle$',fontsize=15)
 plt.legend(fontsize=16)
 plt.xticks(fontsize=16)
 plt.yticks(fontsize=16)
+plt.hlines(retraso1[2][-1], retraso1[0][-1], 1800, linestyles='dashed', colors='black')
+plt.hlines(retraso2[2][-1], retraso2[0][-1], 1800, linestyles='dashed', colors='black')
+plt.hlines(retraso3[2][-1], retraso3[0][-1], 1800, linestyles='dashed', colors='black')
+plt.hlines(retraso4[2][-1], retraso4[0][-1], 1800, linestyles='dashed', colors='black')
+plt.hlines(retraso5[2][-1], retraso5[0][-1], 1800, linestyles='dashed', colors='black')
+plt.yticks(np.arange(0, 18, 1))
+#Quiero un solo legend para las lineas punteadas
+plt.plot([], [], 'k--', label='Valor final para cada caso', lw=2)
+plt.legend(fontsize=14)
 plt.savefig('Aver_minus.png', dpi=250)
 
 plt.show()
