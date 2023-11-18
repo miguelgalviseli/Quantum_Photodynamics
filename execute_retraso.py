@@ -38,10 +38,11 @@ fig.subplots_adjust(hspace=0.5, left=0.1, right=0.9, top=0.95, bottom=0.05)
 for i, retraso in enumerate([retraso1, retraso2, retraso3, retraso4, retraso5]):
     #En cada esquina superior izquierda de cada subplot, agregar A) B) C) D) E)
     axs[i].text(0, 0.90,  chr(65 + i) + ")", transform=axs[i].transAxes, size=20, weight='bold')
-    axs[i].plot(retraso[0], retraso[1], label=r'$\langle \hat{\sigma}_{3} \rangle$', color="#FFC30F", lw=2.5)
+    axs[i].plot(retraso[0], retraso[1], label=r'$\langle \hat{\sigma}_{3} \rangle$', color="#EF767A", lw=2.5)
     axs[i].plot(retraso[0], retraso[3] * 50, label=r'$\lambda (t)$', color='black', lw=3)
-    axs[i].plot(retraso[0], retraso[4] * 25, label="pulso", color="#C70039", lw=2)
+    axs[i].plot(retraso[0], retraso[4] * 25, label="pulso", color="#456990", lw=2.5)
     axs[i].tick_params(axis='y', labelsize=18)
+    axs[i].legend(fontsize=18)
     axs[i].grid()
 
     # Etiquetas en x solo para el último subplot
@@ -52,10 +53,15 @@ for i, retraso in enumerate([retraso1, retraso2, retraso3, retraso4, retraso5]):
         axs[i].tick_params(axis='y', labelsize=18)
 
     # Etiquetas en x solo para el último subplot
+    #Quiero que el legend de este en el centro de la figura
+    #if i == 0:
+    #    axs[i].legend(fontsize=18, loc='center')
     if i == 0:
-         axs[i].plot(retraso[0], retraso[1], label=r'$\langle \hat{\sigma}_{3} \rangle$ Analítico', color="blue", lw=0.75)
+         axs[i].plot(retraso[0], retraso[1], label=r'$\langle \hat{\sigma}_{3} \rangle$ Analítico', color="#49BEAA", lw=0.75)
+         axs[i].legend(fontsize=18, loc='center')
+
          
-    axs[i].legend(fontsize=18)
+    
         
 
 # Unificar leyendas
@@ -82,7 +88,7 @@ plt.grid()
 plt.plot(retraso1[0], retraso1[2], label="Retraso = 100%",color='#173F5F')
 plt.plot(retraso2[0], retraso2[2], label="Retraso = 75%",color='#20639B')
 plt.plot(retraso3[0], retraso3[2], label="Retraso = 50%",color='#3CAEA3')
-plt.plot(retraso4[0], retraso4[2], label="Retraso = 25%",color='#F6D55C')
+plt.plot(retraso4[0], retraso4[2], label="Retraso = 25%",color='black')
 plt.plot(retraso5[0], retraso5[2], label="Retraso = 0%",color='#ED553B')
 plt.xlabel('Tiempo (u.a.)',fontsize=15)
 plt.ylabel(r'$\langle \hat{a}^{\dagger}\hat{a} \rangle$',fontsize=20)

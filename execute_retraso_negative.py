@@ -42,7 +42,7 @@ fig.subplots_adjust(hspace=0.5, left=0.1, right=0.9, top=0.95, bottom=0.05)
 for i, retraso in enumerate([retraso1, retraso2, retraso3, retraso4, retraso5]):
     #En cada esquina superior izquierda de cada subplot, agregar A) B) C) D) E)
     axs[i].text(0, 0.90,  chr(65 + i) + ")", transform=axs[i].transAxes, size=20, weight='bold')
-    axs[i].plot(retraso[0], retraso[1], label=r'$\langle \hat{\sigma}_{3} \rangle$', color="#FFC30F", lw=2.5)
+    axs[i].plot(retraso[0], retraso[1], label=r'$\langle \hat{\sigma}_{3} \rangle$', color="#EF767A", lw=2.5)
     axs[i].plot(retraso[0], retraso[3] * 50, label=r'$\lambda (t)$', color='black', lw=3)
     axs[i].plot(retraso[0], retraso[4] * 25, label="pulso", color="#C70039", lw=2)
     axs[i].tick_params(axis='y', labelsize=18)
@@ -59,7 +59,7 @@ for i, retraso in enumerate([retraso1, retraso2, retraso3, retraso4, retraso5]):
     # Etiquetas en x solo para el último subplot
     if i == 4:
          axs[i].plot(retraso[0], retraso[1], label=r'$\langle \hat{\sigma}_{3} \rangle$ Analítico', color="blue", lw=0.75)
-         axs[i].legend(fontsize=18)
+         axs[i].legend(fontsize=18, loc='center')
 
 # Unificar leyendas
 handles, labels = axs[0].get_legend_handles_labels()
