@@ -58,15 +58,18 @@ for i, retraso in enumerate([retraso1, retraso2, retraso3, retraso4, retraso5]):
     #    axs[i].legend(fontsize=18, loc='center')
     if i == 0:
          axs[i].plot(retraso[0], retraso[1], label=r'$\langle \hat{\sigma}_{3} \rangle$ Analítico', color="#49BEAA", lw=0.75)
-         axs[i].legend(fontsize=18, loc='center')
+         #Hagamos el legend transparente pero no tanto
+         axs[i].legend(fontsize=18, loc='center',framealpha=0.5)
+         
+         
 
          
     
         
 
 # Unificar leyendas
-handles, labels = axs[0].get_legend_handles_labels()
-fig.legend(handles, labels, loc='upper right', bbox_to_anchor=(1.1, 0.90), fontsize=15)
+#handles, labels = axs[0].get_legend_handles_labels()
+#fig.legend(handles, labels, loc='upper right', bbox_to_anchor=(1.1, 0.90), fontsize=15)
 
 # Ajustar el diseño
 plt.tight_layout()

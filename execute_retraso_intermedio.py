@@ -53,8 +53,8 @@ for i, retraso in enumerate([ retraso4, retraso5]):
 
 
 # Unificar leyendas
-handles, labels = axs[0].get_legend_handles_labels()
-fig.legend(handles, labels, loc='upper right', bbox_to_anchor=(1.1, 0.90), fontsize=15)
+#handles, labels = axs[0].get_legend_handles_labels()
+#fig.legend(handles, labels, loc='upper right', bbox_to_anchor=(1.1, 0.90), fontsize=15)
 
 # Ajustar el diseño
 plt.tight_layout()
