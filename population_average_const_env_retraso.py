@@ -165,7 +165,7 @@ def population_inversion_all(N, omega_l, omega_0, omega_c, g, E0, area, ini, num
     resultados_suma = []
     resultadose = []
     resultadosg = []
-    """for i in tqdm(range(0,N)):
+    for i in tqdm(range(0,N)):
         if i == 0:
             psig= tensor(basis(N, 0), basis(2, 0)).unit()
             psie= tensor(basis(N, 0), basis(2, 1)).unit()*0
@@ -187,7 +187,7 @@ def population_inversion_all(N, omega_l, omega_0, omega_c, g, E0, area, ini, num
         resultados.append(result.expect[0])
         resultadose.append(result.expect[2])
         resultadosg.append(result.expect[1])
-        resultados_suma.append(result.expect[2]-result.expect[1])"""
+        resultados_suma.append(result.expect[2]-result.expect[1])
 
     b=np.abs(pulso2(t))**2
     unidad=result1.expect[4]
@@ -240,7 +240,7 @@ def population_inversion_all(N, omega_l, omega_0, omega_c, g, E0, area, ini, num
 
 
 
-    return t, inversion, average_photons, caja, pulso_
+    return t, inversion, average_photons, caja, pulso_, resultadose, resultadosg, resultados_suma
     
 
 

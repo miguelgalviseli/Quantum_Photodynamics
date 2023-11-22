@@ -100,3 +100,18 @@ plt.legend(fontsize=14)
 plt.savefig('Aver_minus.png', dpi=250)
 
 plt.show()
+
+#Grafiquemos solamente el pulso y g(t) para retraso = 100%
+plt.figure(figsize=(12,7))
+plt.grid()
+
+plt.plot(retraso1[0], retraso5[3] * 50, label=r'$\lambda (t)$', color='black', lw=3)
+plt.plot(retraso1[0], retraso5[4] * 25, label="pulso", color="#456990", lw=2.5)
+plt.xlabel('Tiempo (u.a.)',fontsize=15)
+plt.ylabel('Intensidad',fontsize=20)
+plt.legend(fontsize=16)
+plt.xticks(fontsize=16)
+plt.yticks(fontsize=16)
+plt.savefig('Pulso_minus.png', dpi=250)
+
+plt.show()

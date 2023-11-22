@@ -6,43 +6,35 @@ from tqdm import tqdm
 import cv2
 import os
 from population_average_const_env_retraso import *
-N=50
+N=40
 omega_c, omega_0, omega_l = 0.05, 0.05, 0.05
 g = 0.01
 E0 = 0.02
+n=2
 area = "inversion"
 ini = ["e", 0]  
-num_steps = 1000
+num_steps = 2000
+tf= (2*n+1)*np.pi/(2*g)
+tg=3*tf+1000
+retraso=100
 
-#Tiempos retraso máximo
-n=10
-tf= (2*n+1)*np.pi/(2*g)-2500
-tg=tf+2500
-ti=tf*0.50
-#Tiempos retraso cero
-#n=3
-#tf= (2*n+1)*np.pi/(2*g)+2000
-#tg=tf
-#ti=0
+
 
 #population_inversion_variedades(N, omega_l, omega_0, omega_c, g, E0, n, variedades, area, ini, num_steps)
 #population_inversion(N, omega_l, omega_0, omega_c, g, E0, n, area, ini, num_steps,retraso)
-print("El tiempo de pulso es {}".format(round(tf,2)))
-print("El tiempo de retraso es {}".format(round(ti,2)))
-print("El tiempo de g(t) es {}".format(round(tg,2)))
-print("El tiempo total es {}".format(round(tg+ti,2)))
-
+print(tf)
+print(tg)
+a = population_inversion_all(N, omega_l, omega_0, omega_c, g, E0, area, ini, num_steps, tf, tg, 100)
 #print(T)
 #population_inversion(N, omega_l, omega_0, omega_c, g, E0, n, area, ini, num_steps)
 #average_photons_variedad(N, omega_l, omega_0, omega_c, g, E0, n, area, ini, num_steps)
-t = np.linspace(0,max([tf,tg+ti]),num_steps)
 
-a = population_inversion_all(N, omega_l, omega_0, omega_c, g, E0, n, area, ini, num_steps,tf,ti,tg)
-print(len(a[2]))
+
+
 
 #La idea es graficar los histogramas de los datos de a para cada tiempo t y luego hacer una animación
 #Defino la función que va a hacer el histograma para cada tiempo
-def histograma_tiempo(e, g,intensidad,suma, tiempo,t, tf,poisson):
+def histograma_tiempo(e, g,suma, tiempo,t):
     #Debo tomar el enesimo elemento de cada sublista de la lista de listas
     #Para eso, voy a hacer un ciclo for que recorra cada sublista, y que tome el enesimo elemento de cada sublista
 
@@ -102,7 +94,7 @@ def histograma_tiempo(e, g,intensidad,suma, tiempo,t, tf,poisson):
     plt.xlabel('Variedad n',fontsize=15)
     plt.ylabel('Inversión',fontsize=15)
     plt.title('Jaynes-Cummings y radiación. t = ' + str(np.round(t,2)),fontsize=15)
-    plt.plot(lista_n, lista_elementos_medios, color = 'red', label='Onda')
+    #plt.plot(lista_n, lista_elementos_medios, color = 'red', label='Onda')
     #plt.text(N-5, 0.9, "Intensidad = {}".format(round(intensidad[tiempo],6)), fontsize=10, ha='center')
     #plt.annotate("Texto en la parte superior", xy=(t, intensidad[tiempo]), xycoords='axes fraction', fontsize=12, ha='center')
     #plt.bar(N+1, intensidad[tiempo]*1000, color = 'red', edgecolor = 'black', width = 1, label='Intensidad')
@@ -118,8 +110,8 @@ def histograma_tiempo(e, g,intensidad,suma, tiempo,t, tf,poisson):
     plt.close()
 
 #Defino el ciclo for que va a hacer el histograma para cada tiempo
-for i in tqdm(range(len(a[0][0]))):
-    histograma_tiempo(a[0],a[1],a[2],a[3], i, t[i], tf,a[4])
+for i in tqdm(range(len(a[5][0]))):
+    histograma_tiempo(a[5],a[6],a[7], i, a[0][i])
 
 # Ruta donde se encuentran las imágenes
 images_folder = 'Histogramas_f1/' 
