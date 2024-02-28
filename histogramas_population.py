@@ -6,6 +6,8 @@ from tqdm import tqdm
 import cv2
 import os
 from population_average_const_env_retraso import *
+from PIL import Image  # Import the Image module from Pillow
+import imageio 
 N=40
 omega_c, omega_0, omega_l = 0.05, 0.05, 0.05
 g = 0.01
@@ -13,7 +15,7 @@ E0 = 0.02
 n=2
 area = "inversion"
 ini = ["e", 0]  
-num_steps = 2000
+num_steps = 1000
 tf= (2*n+1)*np.pi/(2*g)
 tg=3*tf+1000
 retraso=100
@@ -91,9 +93,9 @@ def histograma_tiempo(e, g,suma, tiempo,t):
     plt.bar(lista_n, lista_enelementose, color = '#173F5F', edgecolor = 'black', width = 1)
     plt.bar(lista_n, lista_enelementosg, color = 'orange', edgecolor = 'black', width = 1)
     plt.plot(lista_n, lista_elementos_suma, "o", color = '#49BEAA', label='Suma')
-    plt.xlabel('Variedad n',fontsize=15)
-    plt.ylabel('Inversión',fontsize=15)
-    plt.title('Jaynes-Cummings y radiación. t = ' + str(np.round(t,2)),fontsize=15)
+    plt.xlabel('Variedad n',fontsize=25)
+    plt.ylabel('Inversión de población',fontsize=25)
+    plt.title(' t = ' + str(np.round(t,2)),fontsize=25)
     #plt.plot(lista_n, lista_elementos_medios, color = 'red', label='Onda')
     #plt.text(N-5, 0.9, "Intensidad = {}".format(round(intensidad[tiempo],6)), fontsize=10, ha='center')
     #plt.annotate("Texto en la parte superior", xy=(t, intensidad[tiempo]), xycoords='axes fraction', fontsize=12, ha='center')
@@ -113,38 +115,41 @@ def histograma_tiempo(e, g,suma, tiempo,t):
 for i in tqdm(range(len(a[5][0]))):
     histograma_tiempo(a[5],a[6],a[7], i, a[0][i])
 
-# Ruta donde se encuentran las imágenes
-images_folder = 'Histogramas_f1/' 
 
-# Nombre del video de salida
-output_video = "video_salida2.mp4"
+
+
+
+# ... (rest of your code)
+
+# Ruta donde se encuentran las imágenes
+images_folder = 'Histogramas_f1/'
+
+# Nombre del archivo GIF de salida
+output_gif = "output.gif"
 
 # Obtener la lista de nombres de archivos en orden
-
 image_names = sorted(
     [img for img in os.listdir(images_folder) if img.endswith(".png")],
     key=lambda x: int(x.split("_")[2].split(".")[0])
 )
 
+# Obtener las dimensiones de la primera imagen
+first_image = Image.open(os.path.join(images_folder, image_names[0]))
+width, height = first_image.size
 
-# Leer la primera imagen para obtener sus dimensiones
-first_image = cv2.imread(os.path.join(images_folder, image_names[0]))
-height, width, layers = first_image.shape
+# Crear una lista para almacenar las imágenes
+images = []
 
-# Configurar el codec y crear un objeto VideoWriter
-fourcc = cv2.VideoWriter_fourcc(*"mp4v")  # Puedes cambiar el codec según tus necesidades
-#Quiero que el video duré menos tiempo
-video = cv2.VideoWriter(output_video, fourcc, 20, (width, height))
-
-# Agregar cada imagen al video
-for image_name in image_names:
+# Leer cada imagen, redimensionar y agregarla a la lista
+for image_name in tqdm(image_names):
     img_path = os.path.join(images_folder, image_name)
-    img = cv2.imread(img_path)
-    video.write(img)
+    img = Image.open(img_path)
+    img = img.resize((width // 2, height // 2))  # Adjust the size as needed
+    img = np.array(img)
+    images.append(img)
 
+# Guardar la lista de imágenes como un archivo GIF
+imageio.mimsave(output_gif, images, duration=0.1)  # You can adjust the duration as needed
 
-# Liberar recursos
-video.release()
-cv2.destroyAllWindows()
+print("GIF creado exitosamente:", output_gif)
 
-print("Video creado exitosamente:", output_video)

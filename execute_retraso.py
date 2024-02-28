@@ -7,7 +7,7 @@ n=2
 area = "inversion"
 ini = ["e", 0]  
 num_steps = 5000
-tf= (2*n+1)*np.pi/(2*g)
+tf= (2*n+1)*np.pi/(2*g)+200
 tg=3*tf+1000
 retraso=100
 
@@ -95,7 +95,7 @@ plt.plot(retraso4[0], retraso4[2], label="Retraso = 25%",color='black')
 plt.plot(retraso5[0], retraso5[2], label="Retraso = 0%",color='#ED553B')
 plt.xlabel('Tiempo (u.a.)',fontsize=15)
 plt.ylabel(r'$\langle \hat{a}^{\dagger}\hat{a} \rangle$',fontsize=20)
-plt.yticks(np.arange(0, 18, 1))
+plt.yticks(np.arange(0, 25, 1))
 plt.legend(fontsize=16)
 plt.xticks(fontsize=16)
 plt.yticks(fontsize=16)
